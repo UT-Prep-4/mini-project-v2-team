@@ -58,4 +58,109 @@ while loops, for loops, lists, random, and turtle graphics.
 Build your game below. Delete this line and start coding!
 '''
 
-print("My game is not built yet!")
+# Pong
+
+import random
+import sys
+import time
+import pygame
+
+pygame.init()
+
+width, height = 800, 600
+
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Ping Pong")
+clock = pygame.time.Clock()
+
+white = (255, 255, 255)
+black = (0, 0, 0)
+
+Pwidth, Pheight = 15, 100
+Bsize = 15
+
+player1 = pygame.Rect(30, height//2 - Pheight//2, Pwidth, Pheight)
+player2 = pygame.Rect(width - 30 - Pwidth, height//2 - Pheight//2, Pwidth, Pheight)
+ball = pygame.Rect(width//2 - Bsize//2, height//2 - Bsize//2, Bsize, Bsize)
+
+Pspeed = 7
+Bspeedx = 5 * random.choice((1, -1))
+Bspeedy = 5 * random.choice((1, -1))
+
+scoreP1 = 0
+scoreP2 = 0
+win = 5
+font = pygame.font.Font(None, 74)
+
+def reset_ball():
+    global Bspeedx, Bspeedy
+    ball.center = (width//2, height//2)
+    Bspeedx = 5 * random.choice((1,-1))
+    Bspeedy = 5 * random.choice((1, -1))
+
+while True:
+  for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+         pygame.quit()
+         sys.exit()
+  keys = pygame.key.get_pressed()
+  if keys[pygame.K_w] and player1.top > 0:
+     player1.y -= Pspeed
+  if keys[pygame.K_s] and player1.bottom < height:
+     player1.y += Pspeed
+  if keys[pygame.K_i] and player2.top > 0:
+     player2.y -= Pspeed
+  if keys[pygame.K_k] and player2.bottom < height:
+     player2.y += Pspeed
+
+  ball.y += Bspeedy
+  ball.x += Bspeedx
+
+  if ball.top <= 0 or ball.bottom >= height:
+     Bspeedy *= -1
+  if ball.colliderect(player1) and Bspeedx < 0:
+     Bspeedx *= -1.1
+  if ball.colliderect(player2) and Bspeedx > 0:
+     Bspeedx *= -1.1
+  
+  if ball.left <= 0:
+     scoreP2 += 1
+     reset_ball()
+  if ball.right >= width:
+     scoreP1 += 1
+     reset_ball()
+  
+
+  screen.fill(black)
+
+  pygame.draw.line(screen, white, (width//2, 0), (width//2, height), 2)
+
+  pygame.draw.rect(screen, white, player1)
+  pygame.draw.rect(screen, white, player2)
+  pygame.draw.ellipse(screen, white, ball)
+
+  p1text = font.render(str(scoreP1), True, white)
+  p2text = font.render(str(scoreP2), True, white)
+
+  screen.blit(p1text, (width//4, 20))
+  screen.blit(p2text, (width * 3//4 - p2text.get_width(), 20))
+  pygame.display.flip()
+
+  if scoreP1 == win:
+     wintext = font.render(str("Player 1 wins!"), True, white)
+     screen.blit(wintext, (width//4, height//3))
+     pygame.display.flip()
+     time.sleep(2)
+     scoreP1, scoreP2 = 0, 0
+     reset_ball()
+
+  elif scoreP2 == win:
+     wintext = font.render(str("Player 2 wins!"), True, white)
+     screen.blit(wintext, (width//4, height//3))
+     pygame.display.flip()
+     time.sleep(2)
+     scoreP1, scoreP2 = 0, 0
+     reset_ball()
+
+  clock.tick(60)
+
