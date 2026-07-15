@@ -57,5 +57,44 @@ while loops, for loops, lists, random, and turtle graphics.
 ==============================================================================
 Build your game below. Delete this line and start coding!
 '''
-
-print("My game is not built yet!")
+#aaa
+import random
+times = 0
+score = 0
+NUM_RAND = random.randint(1,50)
+while times != 3:
+    try :
+        your_choice = int(input("guess the number! (1,50): "))
+    except ValueError :
+        print("you entered something else")
+        print("")
+        your_choice = "wrong"
+        while your_choice == "wrong":
+            try :
+                your_choice = int(input("guess the number! (1,50): "))
+            except ValueError:
+                your_choice = "wrong"
+                print("you entered something else")
+                print("")
+            else:
+                continue
+    finally:
+        if int(your_choice) < NUM_RAND and int(your_choice) > 0 :
+            print("choose a greater value!")
+            print("")
+        if int(your_choice) > NUM_RAND and int(your_choice) < 51 :
+            print("choose a lesser value!")
+            print("")
+        if int(your_choice) > 0 and int(your_choice) < 51:
+            score = score + 1
+        if int(your_choice) > 50 or int(your_choice) < 1 :
+            print("you input a number outside the range!")
+            print("")
+        if int(your_choice) == NUM_RAND:
+            NUM_RAND = random.randint(1,50)
+            times = times + 1
+            print("you guessed the number", times,"times")
+            print("")
+            if (times) == 3:
+                print ("your score is:", 100-score)
+print("YOU WIN!")
